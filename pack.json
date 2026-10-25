@@ -1,0 +1,163 @@
+{
+  "format": "pack/1",
+  "engine": "comfyui",
+  "kind": "Text To Image",
+  "id": "civitai-sdxl",
+  "label": "Any Civitai SDXL model",
+  "note": "Paste a Civitai model link in Cobalt Pear's \u00abYour own worker\u00bb to set it up for that model.",
+  "civitai": "sdxl",
+  "workflow": {
+    "4": {
+      "class_type": "CheckpointLoaderSimple",
+      "inputs": {
+        "ckpt_name": "model.safetensors"
+      }
+    },
+    "5": {
+      "class_type": "EmptyLatentImage",
+      "inputs": {
+        "width": 1024,
+        "height": 1344,
+        "batch_size": 1
+      }
+    },
+    "6": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "clip": [
+          "10",
+          0
+        ],
+        "text": ""
+      }
+    },
+    "7": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "clip": [
+          "10",
+          0
+        ],
+        "text": "worst quality, low quality, blurry"
+      }
+    },
+    "3": {
+      "class_type": "KSampler",
+      "inputs": {
+        "model": [
+          "4",
+          0
+        ],
+        "positive": [
+          "6",
+          0
+        ],
+        "negative": [
+          "7",
+          0
+        ],
+        "latent_image": [
+          "5",
+          0
+        ],
+        "seed": 0,
+        "steps": 25,
+        "cfg": 6.0,
+        "sampler_name": "euler_ancestral",
+        "scheduler": "normal",
+        "denoise": 1.0
+      }
+    },
+    "8": {
+      "class_type": "VAEDecode",
+      "inputs": {
+        "samples": [
+          "3",
+          0
+        ],
+        "vae": [
+          "4",
+          2
+        ]
+      }
+    },
+    "9": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "images": [
+          "8",
+          0
+        ],
+        "filename_prefix": "civitai"
+      }
+    },
+    "10": {
+      "class_type": "CLIPSetLastLayer",
+      "inputs": {
+        "clip": [
+          "4",
+          1
+        ],
+        "stop_at_clip_layer": -1
+      }
+    }
+  },
+  "sizes": [
+    [
+      1216,
+      832,
+      "Landscape 3:2"
+    ],
+    [
+      832,
+      1216,
+      "Portrait 2:3"
+    ],
+    [
+      1024,
+      1024,
+      "Square"
+    ],
+    [
+      1344,
+      768,
+      "Wide 16:9"
+    ],
+    [
+      768,
+      1344,
+      "Tall 9:16"
+    ]
+  ],
+  "size_step": 64,
+  "prompt": [
+    [
+      "6",
+      "text"
+    ]
+  ],
+  "negative": [
+    [
+      "7",
+      "text"
+    ]
+  ],
+  "seed": [
+    [
+      "3",
+      "seed"
+    ]
+  ],
+  "width": [
+    [
+      "5",
+      "width"
+    ]
+  ],
+  "height": [
+    [
+      "5",
+      "height"
+    ]
+  ]
+}
