@@ -9,7 +9,7 @@ ARG CIVITAI_TOKEN=PASTE_YOUR_CIVITAI_TOKEN_HERE
 # >>> Put the model's Civitai page link here (or just its version number, e.g. 290640), or its Hugging Face link. <<<
 ARG CIVITAI_MODEL=PASTE_THE_MODEL_LINK_HERE
 
-# >>> Optional — LoRAs built into the worker and used on every picture: Civitai or Hugging Face links, each followed by
+# >>> Optional — LoRAs built into the worker (each picture picks which to use): Civitai or Hugging Face links, each followed by
 #     its strength (1 when left out), separated by spaces. Leave it empty for none. Example:
 #     ARG LORAS="https://civitai.com/models/12345 0.8 https://huggingface.co/user/some-lora 0.6"   <<<
 ARG LORAS=""
