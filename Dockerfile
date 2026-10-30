@@ -1,4 +1,4 @@
-# Any Civitai SDXL model — RunPod Serverless ComfyUI worker (SDXL · Pony · Illustrious · NoobAI checkpoints)
+# SDXL Universal — RunPod Serverless ComfyUI worker (SDXL · Pony · Illustrious · NoobAI checkpoints)
 # Build on RunPod from your own PRIVATE copy of this repo (Dockerfile path = Dockerfile, build context = .).
 # The build steps are downloaded from the original repo, so you never need to edit anything but these two lines (and the optional LORAS line).
 

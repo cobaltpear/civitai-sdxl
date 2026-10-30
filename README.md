@@ -1,4 +1,4 @@
-# Any Civitai SDXL model — RunPod Serverless worker
+# SDXL Universal — RunPod Serverless worker
 
 A ready-to-build [RunPod Serverless](https://runpod.io?ref=qpguwapm) worker for **any SDXL-family checkpoint on Civitai or Hugging Face** — SDXL, Pony, Illustrious and NoobAI models. You paste the model's Civitai or Hugging Face link into the `Dockerfile`; the build downloads that model and bakes it into the image. Based on the official [`runpod/worker-comfyui`](https://github.com/runpod-workers/worker-comfyui).
 

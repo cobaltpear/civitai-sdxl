@@ -3,7 +3,7 @@
   "engine": "comfyui",
   "kind": "Text To Image",
   "id": "civitai-sdxl",
-  "label": "Any Civitai SDXL model",
+  "label": "SDXL Universal",
   "note": "Paste a Civitai model link in Cobalt Pear's \u00abYour own worker\u00bb to set it up for that model.",
   "civitai": "sdxl",
   "workflow": {
