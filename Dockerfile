@@ -1,4 +1,4 @@
-# SDXL Universal — RunPod Serverless ComfyUI worker (SDXL · Pony · Illustrious · NoobAI checkpoints)
+# SDXL Universal — RunPod Serverless ComfyUI worker (SDXL 1.0 (and SDXL Lightning, Turbo and Hyper) checkpoints)
 # Build on RunPod from your own PRIVATE copy of this repo (Dockerfile path = Dockerfile, build context = .).
 # The build steps are downloaded from the original repo, so you never need to edit anything but these two lines (and the optional LORAS line).
 
@@ -6,7 +6,7 @@
 # >>> Put your Civitai API token here (civitai.com → Account settings → Security & Apps → API Keys). Keep your repo PRIVATE.
 #     Not needed for a Hugging Face model. <<<
 ARG CIVITAI_TOKEN=PASTE_YOUR_CIVITAI_TOKEN_HERE
-# >>> Put the model's Civitai page link here (or just its version number, e.g. 290640), or its Hugging Face link. <<<
+# >>> Put the model's Civitai page link here (or just its version number, e.g. 1759168), or its Hugging Face link. <<<
 ARG CIVITAI_MODEL=PASTE_THE_MODEL_LINK_HERE
 
 # >>> Optional — LoRAs built into the worker (each picture picks which to use): Civitai or Hugging Face links, each followed by

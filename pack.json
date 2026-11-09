@@ -4,7 +4,7 @@
   "kind": "Text To Image",
   "id": "civitai-sdxl",
   "label": "SDXL Universal",
-  "note": "Paste a Civitai model link in Cobalt Pear's \u00abYour own worker\u00bb to set it up for that model.",
+  "note": "Paste a Civitai model link in Cobalt Pear's «Your own worker» to set it up for that model.",
   "civitai": "sdxl",
   "workflow": {
     "4": {

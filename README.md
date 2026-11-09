@@ -1,14 +1,15 @@
 # SDXL Universal — RunPod Serverless worker
 
-A ready-to-build [RunPod Serverless](https://runpod.io?ref=qpguwapm) worker for **any SDXL-family checkpoint on Civitai or Hugging Face** — SDXL, Pony, Illustrious and NoobAI models. You paste the model's Civitai or Hugging Face link into the `Dockerfile`; the build downloads that model and bakes it into the image. Based on the official [`runpod/worker-comfyui`](https://github.com/runpod-workers/worker-comfyui).
+A ready-to-build [RunPod Serverless](https://runpod.io?ref=qpguwapm) worker for **any SDXL checkpoint on Civitai or Hugging Face**. You paste the model's Civitai or Hugging Face link into the `Dockerfile`; the build downloads that model and bakes it into the image. Based on the official [`runpod/worker-comfyui`](https://github.com/runpod-workers/worker-comfyui).
 
 > Some Civitai models are 18+. You download them with your own Civitai account and are responsible for following each model's license.
 
 ## What it takes
 
-- A **Checkpoint** whose base model is SDXL, Pony, Illustrious or NoobAI. Flux, SD 1.5, SD 3.5, video models, LoRAs and others are refused at build time with a clear message — they need a different workflow.
+- A **Checkpoint** whose base model on Civitai is SDXL 1.0 (and SDXL Lightning, Turbo and Hyper). Other SDXL-family models have their own worker, and the build tells you which: Illustrious → [civitai-illustrious](https://github.com/cobaltpear/civitai-illustrious), NoobAI → [civitai-noobai](https://github.com/cobaltpear/civitai-noobai), Pony → [civitai-pony](https://github.com/cobaltpear/civitai-pony). Flux, SD 1.5, video models, LoRAs and others are refused at build time with a clear message.
+- A model page that has versions for several base models: a link without `modelVersionId` takes the newest version made for SDXL.
 - The model's primary SafeTensor file. It is checked by SHA-256 against Civitai and saved as `checkpoints/model.safetensors`; `model.json` next to it records which model and version it is.
-- On Hugging Face: a repo with a single-file checkpoint (a `.safetensors` of the whole model at its top, as most SDXL repos have next to their diffusers folders). The smallest one is taken (fp16 rather than fp32); link a file (`…/blob/main/<file>`) to pick another. A repo with only diffusers folders is refused. A gated repo needs `HF_TOKEN=<a Read token>` in `civitai.env`.
+- On Hugging Face: a repo with a single-file checkpoint (a `.safetensors` of the whole model at its top, as most SDXL repos have next to their diffusers folders). The smallest one is taken (fp16 rather than fp32); link a file (`…/blob/main/<file>`) to pick another. A repo with only diffusers folders is refused. Hugging Face doesn't say which SDXL-family base a file is made for, so any SDXL-architecture checkpoint is taken. A gated repo needs `HF_TOKEN=<a Read token>` in `civitai.env`.
 
 No extra nodes, no upscalers — SDXL runs on the ComfyUI of the base image. LoRAs: see [LoRAs](#loras).
 
@@ -20,7 +21,7 @@ New to this? Follow the [step-by-step setup guide](https://cobaltpear.github.io/
    (Your Civitai token will be in it, so it must stay private. A Hugging Face model needs no token.)
 2. **Fill in two lines** of `Dockerfile` in your copy (✏️ edit → Commit):
    - `PASTE_YOUR_CIVITAI_TOKEN_HERE` → your token (civitai.com → Account settings → Security & Apps → API Keys). Leave it for a Hugging Face model.
-   - `PASTE_THE_MODEL_LINK_HERE` → the model's page link, e.g. `https://civitai.com/models/257749?modelVersionId=290640`. A link without `modelVersionId` takes the newest version; a plain version number works too. Or a Hugging Face link, e.g. `https://huggingface.co/SG161222/RealVisXL_V5.0`.
+   - `PASTE_THE_MODEL_LINK_HERE` → the model's page link, e.g. `https://civitai.com/models/133005?modelVersionId=1759168`. A link without `modelVersionId` takes the newest version; a plain version number works too. Or a Hugging Face link, e.g. `https://huggingface.co/SG161222/RealVisXL_V5.0`.
 
    Using [Cobalt Pear](https://cobaltpear.github.io/)? It gives you two links instead: one makes your private copy, the other opens a new file `civitai.env` with the model filled in — paste your token (none for a Hugging Face model), Commit. That file wins over the `Dockerfile` lines.
 
@@ -93,7 +94,7 @@ To rebuild: commit any change to the `main` branch of your copy — RunPod build
 
 ## Use it
 
-Any client that sends ComfyUI API-format workflows to RunPod works. `pack.json` in this repo holds a plain SDXL workflow (Euler a, 25 steps, CFG 6, clip skip 2) and tells a client where the prompt, negative, seed and size go (format `pack/1`, engine `comfyui`).
+Any client that sends ComfyUI API-format workflows to RunPod works. `pack.json` in this repo holds a plain SDXL workflow (Euler a, 25 steps, CFG 6) and tells a client where the prompt, negative, seed and size go (format `pack/1`, engine `comfyui`).
 
 Raw request:
 
@@ -111,7 +112,7 @@ Each model has its own best settings — see its Civitai page (sampler, steps, C
 
 - **Per picture:** send up to 4 LoRAs with a request: `input.remote_loras` = `[{"name": "remote_<id>.safetensors", "url": "<download link>", "sha256": "<file sha256>"}]` plus a `LoraLoader` reading that name in the workflow — the worker downloads each once and keeps it while it runs. [Cobalt Pear](https://cobaltpear.github.io/) does all of this from a Civitai or Hugging Face link. For more than 4, set the environment variable `REMOTE_LORA_MAX` (e.g. `8`) on your endpoint (**Manage → Edit Endpoint → Environment Variables**).
 - **Built in:** put links in the `LORAS` line of your `Dockerfile` — each followed by its strength — and rebuild. They are downloaded once at build time, so a fresh worker doesn't download them again. A request picks which ones it uses with `input.baked_loras` = `[{"link": "<link from LORAS>", "strength": 0.8}]` (`[]` = none); without it every one is used at its `LORAS` strength. One that isn't built in (yet) is left out and named in `output.warning`, and `output.built_in` lists the built-in LoRAs. Put their trigger words in your prompt yourself. To accept only built-in LoRAs, set `REMOTE_LORA_MAX` to `0`.
-- Pick LoRAs made for SDXL (Pony, Illustrious …) — the worker warns (`output.warning`) when one doesn't fit.
+- Pick LoRAs made for SDXL — the worker warns (`output.warning`) when one doesn't fit.
 
 ### Compatible clients
 
